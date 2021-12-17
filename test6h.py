@@ -14,10 +14,11 @@ class Kusen():
         pass
     def GetCenter(self, image, pos):
         self.image = image
-        x = pos[0] + image.get_width() / 2
-        y = pos[1] + image.get_height() / 2
+        x = pos[0] + image.get_width() // 2
+        y = pos[1] + image.get_height() // 2
         center = (x, y)
         return center
+
 
 
 class Plane(Kusen):
@@ -64,6 +65,16 @@ class Shot():
         shotSurface = pygame.Surface((11, 31), SRCALPHA)
         shotSurface.blit(self.shot, (0 ,0))
         SURFACE.blit(self.shot, (x, y))
+#xu li va cham
+def collision(surface1, pos1, surface2, pos2):
+    mask1 = pygame.mask.from_surface(surface1)
+    mask2 = pygame.mask.from_surface(surface2)
+    x = pos2[0] - pos1[0]
+    y = pos2[1] - pos1[1]
+    #print(x, y)
+    if mask1.overlap(mask2, (x, y)) != None:
+        return True
+    return False
 
 
 def main():
@@ -95,16 +106,24 @@ def main():
         background.draw(POS1, POS2)
         plane.draw(plane_pos)
         enemy = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/enemy1.png")
-        SURFACE.blit(enemy, (400, 100))
-        
+        enemy_pos = [400, 100]
+        SURFACE.blit(enemy, enemy_pos)
+
+
+
         if SHOTMOVE: 
             plane_img = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/plane.png")
+            shot_img = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/Shot.png")
             plane_ct = plane.GetCenter(plane_img, plane_pos)
             plane_y = plane_ct[1] - 30
             while plane_y > 0:
                 shot.move(plane_ct[0], plane_y)
                 plane_y -= 30
-                print(plane_ct[1], plane_y)
+                #print(plane_ct[1], plane_y)
+                #print(enemy_pos)
+                if collision(enemy, enemy_pos, shot_img, (plane_ct[0], plane_y)) == True:
+                    print("OK")
+                    plane_y = -50
               
 
 
