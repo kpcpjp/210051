@@ -1,3 +1,4 @@
+from calendar import c
 import pygame, sys
 from pygame.locals import *
 #khoi dong pygame
@@ -14,14 +15,26 @@ FPSCLOCK = pygame.time.Clock()
 #load cac hinh anh, am thanh trong game
 plane_image = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/plane.png")
 enemy_image = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/enemy1.png")
+enemy_ammo = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/enemyshot.png")
 plane_ammo = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/Shot.png")
 BACKGROUND1 = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/Blue Sky1.png")
 BACKGROUND2 = pygame.image.load("C:/Users/210051/Desktop/Pygame Image/Blue Sky1.png")
 
-#danh sach toa do ammo
+#Danh sach toa do ammo
 list_Ammo = []
-#toc do Ammo
+list_EnemyAmmo = []
+list_EnemyMove = []
+#so luong dan toi da cua Enemy tren man hinh
+Number_EnemyAmmo = 3
+
+##Gia tri toc do 
+#Toc do plane
 Ammo_speed = 30
+#Toc do Enemy
+Enemy_Speed = 10
+#Toc do Ammo cua Enemy
+EnemyAmmo_speed = 100
+
 
 #class anh nen game
 class Background():
@@ -53,24 +66,48 @@ class Plane():
 
 #class Ammo
 class Ammo():
+    #ham ve dan cua Plane
     def draw(self, enemy_pos):
         for count, i in enumerate(list_Ammo):
-            #lay toa do dan trong list
+            #lay toa do Ammo trong list
             xAmmo = i["xAmmo"]
             yAmmo = i["yAmmo"]
             #hien thi ra man hinh
             SURFACE.blit(plane_ammo, (xAmmo, yAmmo))
             #Ammo di chuyen len tren theo toc do Ammo
             list_Ammo[count]["yAmmo"] = yAmmo - Ammo_speed
-            #Khi Ammo gan ra ngoai man hinh thi xoa dan
-            if yAmmo <= 5 or collision(plane_ammo, (xAmmo, yAmmo), enemy_image, enemy_pos) == True:
+            #Khi Ammo gan ra ngoai man hinh thi xoa Ammo
+            if yAmmo <= 1 or collision(plane_ammo, (xAmmo, yAmmo), enemy_image, enemy_pos) == True:
                 list_Ammo.remove(list_Ammo[count])
         #print(list_Ammo)
 
+    #ham ve dan cua Enemy
+    def drawEnemyAmmo(self):
+        for count, i in enumerate(list_EnemyAmmo):
+            #lay toa do EnemyAmmo trong list
+            xEnemyAmmo = i["xEnemyAmmo"]
+            yEnemyAmmo = i["yEnemyAmmo"]
+            #hien thi ra man hinh
+            
+            SURFACE.blit(enemy_ammo, (xEnemyAmmo, yEnemyAmmo))
+            #EnemyAmmo di chuyen xuong theo toc do Ammo
+            list_EnemyAmmo[count]["yEnemyAmmo"] = yEnemyAmmo + EnemyAmmo_speed
+            #Khi EnemyAmmo gan ra ngoai man hinh thi xoa EnemyAmmo
+            if yEnemyAmmo >= 959:
+                list_EnemyAmmo.remove(list_EnemyAmmo[count])
+        print(list_EnemyAmmo)
+
 #class Enemy
 class Enemy():
-    def draw(self, enemy_pos):
-        SURFACE.blit(enemy_image,enemy_pos)
+    def draw(self):
+        for count, i in enumerate(list_EnemyMove):
+            xEnemy = i["xEnemy"]
+            yEnemy = i["yEnemy"]
+        SURFACE.blit(enemy_image, (xEnemy, yEnemy))
+        list_EnemyMove[count]["yEnemy"] = yEnemy + Enemy_Speed
+        if yEnemy >= 900:
+            list_EnemyMove.remove(list_EnemyMove[count])
+        print(list_EnemyMove)
 
 #Hàm lấy tọa độ trung tâm
 def GetCenter(image, pos):
@@ -103,7 +140,7 @@ def main():
     #vi tri ban dau cua may bay nguoi choi
     plane_pos = [400, 800]
     #vi tri ban dau cua may bay dich
-    enemy_pos = [400, 200]
+    #enemy_pos = [50, 50]
 
 
     #vong lap chinh game
@@ -126,15 +163,30 @@ def main():
                     AmmoStart = GetCenter(plane_image, plane_pos)
                     list_Ammo.append({
                         "xAmmo": AmmoStart[0],
-                        "yAmmo": AmmoStart[1]})
+                        "yAmmo": AmmoStart[1] - 70})
                     #print(list_Ammo)
 
+        #Danh sach toa do Ammo cua Enemy
+        enemy_pos = [50, 50]
+        Enemy_AmmoStart = GetCenter(enemy_image,enemy_pos)
+        if len(list_EnemyAmmo) < Number_EnemyAmmo:
+            list_EnemyAmmo.append({
+                "xEnemyAmmo" : Enemy_AmmoStart[0], 
+                "yEnemyAmmo" : Enemy_AmmoStart[1]})
+        
+        #Danh sach toa do Enemy 
+        list_EnemyMove.append({
+            "xEnemy" : enemy_pos[0],
+            "yEnemy" : enemy_pos[1]})
+        
 
+   
         #ve cac doi tuong
         background.draw(POS1, POS2)
         plane.draw(plane_pos)
         ammo.draw(enemy_pos)
-        enemy.draw(enemy_pos)
+        #ammo.drawEnemyAmmo()
+        enemy.draw()
         #Cap nhat man hinh
         pygame.display.update()
         #thiet lap FPS
