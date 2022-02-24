@@ -4,9 +4,9 @@ from pygame import mixer
 class Game:
     def __init__(self):
         pygame.init()  # Init pygame
-        self.xScreen, self.yScreen = 1000, 600  # Screen create
-        self.VBullet = 20  # Tốc độ Bullet
-        self.VPlanes = 20  # Tốc độ Planes
+        self.xScreen, self.yScreen = 1000, 960  # Screen create
+        self.VBullet = 25  # Tốc độ Bullet
+        self.VPlanes = 25  # Tốc độ Planes......./
         self.VEnemy = 6  # Tốc độ Enemy
         self.scores = 0  # Điểm số
         self.numberEnemy = 2  # Số lượng enemy trong một screen
@@ -14,12 +14,12 @@ class Game:
         linkBackGround = 'C:/Users/210051/Desktop/New folder/background.jpg'  # Đường dẫn ảnh background
         self.linkEnemy = 'C:/Users/210051/Desktop/New folder/enemy.png'  # Đường dẫn ảnh Enemy
         self.linkPlanes = 'C:/Users/210051/Desktop/New folder/planes.png'  # Đường dẫn ảnh Planes
-        self.sizexPlanes, self.sizeyPlanes = 80, 80
+        self.sizexPlanes, self.sizeyPlanes = 70, 70
         self.xPlanes, self.yPlanes = self.xScreen / \
             2, self.yScreen-100  # Khởi tao vị trí ban đầu planes
         self.screen = pygame.display.set_mode(
             (self.xScreen, self.yScreen))  # Khởi tao kích thước màn hình
-        pygame.display.set_caption("Code Learn - Space Invaders")
+        pygame.display.set_caption("Space Invaders")
         self.background = pygame.image.load(linkBackGround)
         icon = pygame.image.load(self.linkPlanes)
         pygame.display.set_icon(icon)  # Set icon cho screen
@@ -28,7 +28,7 @@ class Game:
         self.listEnemy = []
         self.YGameOver = 0
         self.K_DOWN = self.K_UP = self.K_LEFT = self.K_RIGHT = False
-        self.music("C:/Users/210051/Desktop/New folder/musictheme.wav")
+        #self.music("C:/Users/210051/Desktop/New folder/musictheme.wav")
     def music(self, url):  # Âm thanh bắn
         bulletSound = mixer.Sound(url)
         bulletSound.play()
@@ -46,7 +46,7 @@ class Game:
             xEnemy = i["xEnemy"]  # Lấy toạn độ X
             yEnemy = i["yEnemy"]  # Lấy toạn độ Y
             self.YGameOver
-            # print("đổi")
+            #print("đổi")
             if xEnemy < 0 or xEnemy > self.xScreen-self.sizexPlanes:  # Nếu chạm vào hai bên phải trái
                 # thì đổi hướng
                 self.listEnemy[count]["direction"] = not self.listEnemy[count]["direction"]
@@ -61,29 +61,18 @@ class Game:
             self.YGameOver = yEnemy if yEnemy > self.YGameOver else self.YGameOver
 
             # print(xEnemy,yEnemy,self.xScreen,self.yScreen)
-            # print(self.listEnemy[count]["direction"])
+            #print(self.listEnemy[count]["direction"])
     def bullet(self):
         for count, i in enumerate(self.listBullet):
             xBullet = i["xBullet"]  # Lấy trúc tọa độ theo X
-            yBullet = i["yBullet"]  # Lấy trúc tọa độ theo X
+            yBullet = i["yBullet"]  # Lấy trúc tọa độ theo Y
             self.image_draw('C:/Users/210051/Desktop/New folder/bullet.png', xBullet,
                             yBullet, 50, 50)  # In ra bullet
             self.listBullet[count]["yBullet"] = yBullet - \
                 self.VBullet  # Tiến y vè phía trước
             if yBullet <= 5:  # nếu toạn độ Y phía trên nàm hình thì xóa
                 self.listBullet.remove(self.listBullet[count])
-        # print(self.listBullet)
-    def bullet(self):
-        for count, i in enumerate(self.listBullet):
-            xBullet = i["xBullet"]  # Lấy trúc tọa độ theo X
-            yBullet = i["yBullet"]  # Lấy trúc tọa độ theo X
-            self.image_draw('C:/Users/210051/Desktop/New folder/bullet.png', xBullet,
-                            yBullet, 50, 50)  # In ra bullet
-            self.listBullet[count]["yBullet"] = yBullet - \
-                self.VBullet  # Tiến y vè phía trước
-            if yBullet <= 5:  # nếu toạn độ Y phía trên nàm hình thì xóa
-                self.listBullet.remove(self.listBullet[count])
-        # print(self.listBullet)
+        print(self.listBullet)
 
     def run(self):
         while self.gamerunning:
@@ -102,12 +91,13 @@ class Game:
                         self.K_RIGHT = True
                     if event.key == pygame.K_SPACE:
                         if len(self.listBullet) < self.numberBullet:
-                            self.music("C:/Users/210051/Desktop/New folder/laser.wav")
+                            #bullet music
+                            #self.music("C:/Users/210051/Desktop/New folder/laser.wav")
                             self.listBullet.append({  # Add Thêm bullet
                                 "xBullet": self.xPlanes+self.sizexPlanes/2 - 25,
                                 "yBullet": self.yPlanes-self.sizexPlanes/2,
                             })
-                        # print(self.listBullet)
+                        print(self.listBullet)
                 if event.type == pygame.KEYUP:  # sự kiện thả phím
                     if event.key == pygame.K_DOWN:
                         self.K_DOWN = False
@@ -142,6 +132,7 @@ class Game:
                     "direction": random.choice((True, False))
                 })
             listEnemy2 = self.listEnemy
+            print(listEnemy2)
             # Kiểm tra có trúng bullet
             for countEnemy, enemyIteam in enumerate(listEnemy2):
                 xEnemy = enemyIteam["xEnemy"]
@@ -167,7 +158,8 @@ class Game:
                 self.numberEnemy = (self.scores/15) + 2
             if self.YGameOver > self.yScreen-50:  # Nếu Enemy về gần đích
                 newGame = False
-                self.music("C:/Users/210051/Desktop/New folder/musicbackground.wav")
+                #background music
+                #self.music("C:/Users/210051/Desktop/New folder/musicbackground.wav")
                 while(True):
                     for event in pygame.event.get():   # Nếu nhấn
                         if event.type == pygame.QUIT:  # Thoát
@@ -190,8 +182,8 @@ class Game:
                 self.YGameOver = 0
             self.show_score(10, 10, "Scores:{}".format(self.scores), 35)
             # self.show_score(self.xScreen - 200, 20, "duyduysysy@gmail.com", 15)
-            self.image_draw("C:/Users/210051/Desktop/New folder/codelearn-logo.png",
-                            self.xScreen-180, 10, 150, 60)  # Logo code Learn
+            #self.image_draw("C:/Users/210051/Desktop/New folder/codelearn-logo.png",
+                            #self.xScreen-180, 10, 150, 60)  # Logo code Learn
             self.enemy()
             self.bullet()
             self.image_draw(self.linkPlanes, self.xPlanes,
