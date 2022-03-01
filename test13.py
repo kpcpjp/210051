@@ -96,6 +96,8 @@ class Character():
             if collision(plane_image, plane_pos, enemy_image, (xEnemy, yEnemy)) == True:
                 list_Enemy.remove(list_Enemy[count])
                 scores += 1
+            show_score(20, 20, "Scores:{}".format(scores), 20)
+            
         #print(list_Enemy)
 
 
@@ -138,7 +140,6 @@ def collision(surface1, pos1, surface2, pos2):
     if mask1.overlap(mask2, (x, y)) != None:
         return True
     return False
-
 #Ham chinh cua game
 def main():
     #thiet lap cac doi tuong
