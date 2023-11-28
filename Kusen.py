@@ -4,6 +4,7 @@ from pygame import mixer
 from pygame.locals import *
 #khoi dong pygame
 pygame.init()
+##
 #lay nhieu event khi an giu phim
 pygame.key.set_repeat(220, 0)
 #set kich thuoc va tao man hinh chinh game
